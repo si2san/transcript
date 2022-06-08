@@ -17,7 +17,6 @@ jobs:
           extensions: mbstring, gd, sqlite
       - name: Install Composer dependencies
         run: |
-          cd src
           composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
       - name: Run PHPUnit
-        run: cd src && composer run test
+        run: composer run test
