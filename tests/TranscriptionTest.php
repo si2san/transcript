@@ -9,12 +9,31 @@ use SiThuSan\Transcript\Transcription;
 
 final class TranscriptionTest extends TestCase
 {
+    private string $path= '/stubs/basic-example.vtt';
+
     public function testItLoadAVttFile(): void
     {
-        $path = '/stubs/basic-example.vtt';
-        $transcription = Transcription::load(__DIR__ . $path);
-        $excepted = \file_get_contents(__DIR__ . $path);
+        $file = __DIR__ . $this->path;
 
-        $this->assertEquals($excepted, $transcription);
+        $transcription = Transcription::load($file)->toString();
+
+        $this->assertStringContainsString('Here is a', $transcription);
+    }
+
+    public function testCanConvertToAnArrayOfLines(): void
+    {
+        $file = __DIR__ . $this->path;
+
+        $this->assertCount(4, Transcription::load($file)->lines());
+    }
+
+    public function testDiscardsIrrelevantLinesFromTheVttFile(): void
+    {
+        $file = __DIR__ . $this->path;
+
+        $transcription = Transcription::load($file);
+
+        $this->assertStringNotContainsString('WEBVTT', $transcription->toString());
+        $this->assertCount(4, $transcription->lines());
     }
 }
