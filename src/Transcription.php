@@ -6,20 +6,25 @@ namespace SiThuSan\Transcript;
 
 final class Transcription
 {
-    private array $lines;
+    public function __construct(private array $lines)
+    {
+        $this->lines = $this->discardInvalidLines(\array_map('trim', $lines));
+    }
 
     public static function load(string $path): self
     {
-        $instance = new static();
-
-        $instance->lines = $instance->discardIrrelevantLines(\file($path));
-
-        return $instance;
+        return new static(\file($path));
     }
 
     public function lines(): array
     {
-        return $this->lines;
+        $lines = [];
+
+        for ($i = 0; $i < count($this->lines); $i += 2) {
+            $lines[] = new Line($this->lines[$i], $this->lines[$i + 1]);
+        }
+
+        return $lines;
     }
 
     public function toString(): string
@@ -27,12 +32,12 @@ final class Transcription
         return \implode("", $this->lines);
     }
 
-    private function discardIrrelevantLines(array $lines): array
+    private function discardInvalidLines(array $lines): array
     {
         // rekey the array
         return \array_values(\array_filter(
-            \array_map('trim', $lines),
-            fn ($line) => $line !== '' && $line !== 'WEBVTT' && !is_numeric($line)
+            $lines,
+            fn ($line) => Line::valid($line)
         ));
     }
 }
