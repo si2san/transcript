@@ -10,13 +10,11 @@ use SiThuSan\Transcript\Transcription;
 
 final class TranscriptionTest extends TestCase
 {
-    private string $path = '/stubs/basic-example.vtt';
+    private string $path =  __DIR__ . '/stubs/basic-example.vtt';
 
     public function testItLoadAVttFile(): void
     {
-        $file = __DIR__ . $this->path;
-
-        $transcription = Transcription::load($file)->toString();
+        $transcription = Transcription::load($this->path)->toString();
 
         $this->assertStringContainsString('Here is a', $transcription);
     }
@@ -24,8 +22,7 @@ final class TranscriptionTest extends TestCase
 
     public function testCanConvertToAnArrayOfLinesObject(): void
     {
-        $file = __DIR__ . $this->path;
-        $lines = Transcription::load($file)->lines();
+        $lines = Transcription::load($this->path)->lines();
 
         $this->assertCount(2, $lines);
         $this->assertContainsOnlyInstancesOf(Line::class, $lines);
@@ -33,11 +30,27 @@ final class TranscriptionTest extends TestCase
 
     public function testDiscardsIrrelevantLinesFromTheVttFile(): void
     {
-        $file = __DIR__ . $this->path;
 
-        $transcription = Transcription::load($file);
+        $transcription = Transcription::load($this->path);
 
         $this->assertStringNotContainsString('WEBVTT', $transcription->toString());
         $this->assertCount(2, $transcription->lines());
+    }
+
+    /**
+     * @groupfailing
+     */
+    public function testRenderTheLinesAsHtml(): void
+    {
+        $transcription = Transcription::load($this->path);
+
+        $excepted  = <<<EOT
+        <a href='?time=00:03'>Here is a</a>
+        <a href='?time=00:04'>example of a VTT file.</a>
+        EOT;
+
+        $result = $transcription->htmlLines();
+
+        $this->assertEquals($excepted, $result);
     }
 }

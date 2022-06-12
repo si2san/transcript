@@ -32,6 +32,14 @@ final class Transcription
         return \implode("", $this->lines);
     }
 
+    public function htmlLines(): string
+    {
+       return implode("\n", \array_map(
+            fn (Line $line) => $line->toAnchorTag(),
+            $this->lines()
+        ));
+    }
+
     private function discardInvalidLines(array $lines): array
     {
         // rekey the array
