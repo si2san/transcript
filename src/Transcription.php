@@ -8,44 +8,24 @@ final class Transcription
 {
     public function __construct(private array $lines)
     {
-        $this->lines = $this->discardInvalidLines(\array_map('trim', $lines));
+        $this->lines = array_slice(array_filter(array_map('trim', $lines)), 1);
     }
 
     public static function load(string $path): self
     {
-        return new static(\file($path));
+        return new static(file($path));
     }
 
-    public function lines(): array
+    public function lines(): Lines
     {
-        $lines = [];
-
-        for ($i = 0; $i < count($this->lines); $i += 2) {
-            $lines[] = new Line($this->lines[$i], $this->lines[$i + 1]);
-        }
-
-        return $lines;
-    }
-
-    public function toString(): string
-    {
-        return \implode("", $this->lines);
-    }
-
-    public function htmlLines(): string
-    {
-       return implode("\n", \array_map(
-            fn (Line $line) => $line->toAnchorTag(),
-            $this->lines()
+        return new Lines(array_map(
+            fn ($line) => new Line((int) $line[0],$line[1],$line[2]),
+            array_chunk($this->lines, 3)
         ));
     }
 
-    private function discardInvalidLines(array $lines): array
+    public function __toString(): string
     {
-        // rekey the array
-        return \array_values(\array_filter(
-            $lines,
-            fn ($line) => Line::valid($line)
-        ));
+        return implode("\n", $this->lines);
     }
 }
