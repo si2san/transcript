@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace SiThuSan\Transcript;
 
+use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
 
-final class Lines implements Countable, IteratorAggregate
+final class Lines implements Countable, IteratorAggregate, ArrayAccess
 {
     public function __construct(private array $lines)
     {
@@ -39,5 +40,29 @@ final class Lines implements Countable, IteratorAggregate
     public function __toString(): string
     {
         return \implode("\n", $this->lines);
+    }
+
+    public function offsetExists(mixed $key): bool
+    {
+        return isset($this->lines[$key]);
+    }
+
+    public function offsetGet(mixed $key): mixed
+    {
+        return $this->lines[$key];
+    }
+
+    public function offsetSet(mixed $key, mixed $value): void
+    {
+        if (\is_null($key)) {
+            $this->lines[] = $value;
+        } else {
+            $this->lines[$key] = $value;
+        }
+    }
+
+    public function offsetUnset(mixed $key): void
+    {
+        unset($this->lines[$key]);
     }
 }

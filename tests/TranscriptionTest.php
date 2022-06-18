@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use ArrayAccess;
 use PHPUnit\Framework\TestCase;
 use SiThuSan\Transcript\Line;
 use SiThuSan\Transcript\Transcription;
@@ -16,7 +17,6 @@ final class TranscriptionTest extends TestCase
     {
         $this->transcription = Transcription::load(__DIR__ . '/stubs/basic-example.vtt');
     }
-
 
     public function testItLoadAVttFile(): void
     {
@@ -49,5 +49,13 @@ final class TranscriptionTest extends TestCase
         $result = $this->transcription->lines()->ashtml();
 
         $this->assertEquals($excepted, $result);
+    }
+
+    public function testSupportArrayAccess(): void
+    {
+        $lines = $this->transcription->lines();
+
+        $this->assertInstanceOf(ArrayAccess::class, $lines);
+        $this->assertInstanceOf(Line::class, $lines[0]);
     }
 }
