@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use ArrayAccess;
+use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 use SiThuSan\Transcript\Line;
 use SiThuSan\Transcript\Transcription;
@@ -57,5 +58,13 @@ final class TranscriptionTest extends TestCase
 
         $this->assertInstanceOf(ArrayAccess::class, $lines);
         $this->assertInstanceOf(Line::class, $lines[0]);
+    }
+
+    public function testCanRenderAsJson(): void
+    {
+        $lines = $this->transcription->lines();
+
+        $this->assertInstanceOf(JsonSerializable::class, $lines);
+        $this->assertJson(\json_encode($lines));
     }
 }

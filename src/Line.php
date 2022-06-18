@@ -19,7 +19,7 @@ final class Line
         return "<a href=\"?time={$this->beginningTimestamp()}\">{$this->body}</a>";
     }
 
-    public function beginningTimestamp():string
+    public function beginningTimestamp(): string
     {
         \preg_match('/^\d{2}:(\d{2}:\d{2})\.\d{3}/', $this->timestamp, $matches);
 
