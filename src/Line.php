@@ -14,12 +14,12 @@ final class Line
         //
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
         return "<a href=\"?time={$this->beginningTimestamp()}\">{$this->body}</a>";
     }
 
-    public function beginningTimestamp()
+    public function beginningTimestamp():string
     {
         \preg_match('/^\d{2}:(\d{2}:\d{2})\.\d{3}/', $this->timestamp, $matches);
 

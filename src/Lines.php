@@ -11,14 +11,14 @@ use Traversable;
 
 final class Lines implements Countable, IteratorAggregate
 {
-    public function __construct(protected array $lines)
+    public function __construct(private array $lines)
     {
         //
     }
 
-    public function asHtml()
+    public function asHtml(): string
     {
-        $formattedLines = array_map(
+        $formattedLines = \array_map(
             fn (Line $line) => $line->toHtml(),
             $this->lines
         );
@@ -28,7 +28,7 @@ final class Lines implements Countable, IteratorAggregate
 
     public function count(): int
     {
-        return count($this->lines);
+        return \count($this->lines);
     }
 
     public function getIterator(): Traversable
@@ -38,6 +38,6 @@ final class Lines implements Countable, IteratorAggregate
 
     public function __toString(): string
     {
-        return implode("\n", $this->lines);
+        return \implode("\n", $this->lines);
     }
 }
