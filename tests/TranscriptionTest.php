@@ -21,7 +21,7 @@ final class TranscriptionTest extends TestCase
 
     public function testItLoadAVttFile(): void
     {
-        $this->assertStringContainsString('Here is a', $this->transcription->__toString());
+        $this->assertStringContainsString('Here is a', (string) $this->transcription);
     }
 
 
@@ -36,7 +36,7 @@ final class TranscriptionTest extends TestCase
 
     public function testDiscardsIrrelevantLinesFromTheVttFile(): void
     {
-        $this->assertStringNotContainsString('WEBVTT', $this->transcription->__toString());
+        $this->assertStringNotContainsString('WEBVTT', (string) $this->transcription);
         $this->assertCount(2, $this->transcription->lines());
     }
 
